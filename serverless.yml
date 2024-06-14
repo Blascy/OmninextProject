@@ -1,0 +1,46 @@
+org: "110601"
+service: user-api
+
+provider:
+  name: aws
+  runtime: python3.8
+  region: us-east-1
+  logRetentionInDays: 7 # Numero di giorni per cui mantenere i log in CloudWatch
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:*
+      Resource: "arn:aws:dynamodb:us-east-1:471112928095:table/table1"
+
+functions:
+  createUser:
+    handler: createUser.handler
+    events:
+      - http:
+          path: users
+          method: post
+    logLevel: info
+
+  getUserById:
+    handler: getUserById.handler
+    events:
+      - http:
+          path: users/{id}
+          method: get
+    logLevel: debug
+
+resources:
+  Resources:
+    Table1:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: table1
+        AttributeDefinitions:
+          - AttributeName: ciaoooo
+            AttributeType: S
+        KeySchema:
+          - AttributeName: ciaoooo
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
